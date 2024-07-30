@@ -10,7 +10,8 @@ int main() {
     const char PLAYER_O = 'O';
 
     char currentPlayer = PLAYER_X;
-
+    char winner = ' ';
+    
     char grid[3][3] = {
         {' ', ' ', ' '},
         {' ', ' ', ' '},
@@ -30,6 +31,10 @@ int main() {
         std::cout << "  " << grid[2][0] << "  |  " << grid[2][1] << "  |  " << grid[2][2] << "  " << std::endl;
         std::cout << "     |     |     " << std::endl;
         
+        if(winner != ' ') {
+            break;
+        }
+
         std::cout << "Where do you want to make your move? (1 - 3) " << std::endl;
 
         while(true) {
@@ -39,6 +44,7 @@ int main() {
             std::cout << "Column number? ";
             std::cin >> targetColumn;
 
+            // Check if player enters invalid input 
             if(targetRow < 0 || targetRow > 2 || targetColumn < 0 || targetColumn > 2) {
                 std::cout << "Invalid input, try again: " << std::endl;
             } else if(grid[targetRow][targetColumn] != ' ') {
@@ -47,14 +53,43 @@ int main() {
                 break;
             }
 
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+
+            // Value reset
             targetRow = -1;
             targetColumn = -1;
         }
-
 
         grid[targetRow][targetColumn] = currentPlayer;
 
         // If currentPlayer is X then the next turn will be O 
         currentPlayer = (currentPlayer == PLAYER_X)? PLAYER_O : PLAYER_X;
+
+        for(int i = 0; i < 3; i++) {
+            if(grid[i][0] != ' ' && grid[i][0] == grid[i][1] && grid[i][1] == grid[i][2]) {
+                winner = grid[i][0];
+                break;
+            }
+        }
+
+        for(int i = 0; i < 3; i++) {
+            if(grid[0][i] != ' ' && grid[0][i] == grid[1][i] && grid[1][i] == grid[2][i]) {
+                winner = grid[0][i];
+                break;
+            }
+        }
+
+        if(grid[0][0] != ' ' && grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2]) {
+            winner = grid[0][0];
+        } else if(grid[0][2] != ' ' && grid[0][2] == grid[1][1] && grid[1][1] == grid[2][0]) {
+            winner = grid[0][2];
+        }
+    }
+
+    if(winner != ' ') {
+        std::cout << "Player " << winner << " is the winner!" << std::endl;
+    } else {
+        std::cout << "Tie!" << std::endl;
     }
 }
